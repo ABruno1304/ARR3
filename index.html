@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blind Rank Isaipuyal</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: white;
+    text-align: center;
+}
+
+h1 {
+    margin: 8px 0;
+    font-size: 22px;
+    color: #b30000;
+}
+
+#movie {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 10px;
+    min-height: 40px;
+}
+
+#rankingBoard {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    padding: 10px;
+}
+
+.rankBox {
+    background: #f2f2f2;
+    padding: 10px;
+    border-radius: 10px;
+    min-height: 45px;
+    font-size: 15px;      /* Bigger text */
+    font-weight: bold;    /* Bold movie names */
+    line-height: 1.3;
+}
+
+#buttons {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    padding: 10px;
+}
+
+button {
+    height: 60px;
+    font-size: 20px;
+    border-radius: 12px;
+    border: none;
+    font-weight: bold;
+    background: #b30000;
+    color: white;
+}
+
+button:active {
+    transform: scale(0.95);
+}
+
+button:disabled {
+    background: gray;
+}
+
+#playAgain {
+    margin: 8px;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 10px;
+    border: none;
+    background: #ffcc00;
+    font-weight: bold;
+    display: none;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🎵 Blind Rank Isaipuyal 🎵</h1>
+
+<div id="movie"></div>
+
+<div id="rankingBoard"></div>
+
+<div id="buttons"></div>
+
+<button id="playAgain" onclick="startGame()">Play Again</button>
+
+<script>
+
+const allMovies = [
+"Roja","Pudhiya Mugam","Gentleman","Kizhakku Cheemayile","Uzhavan","Thiruda Thiruda",
+"Vandicholai Chinraasu","Duet","May Maadham","Kaadhalan","Pavithra","Karuththamma",
+"Pudhiya Mannargal","Muthu","Love Birds","Indian","Anthimanthaarai","Kadhal Desam",
+"Minsara Kanavu","Jeans","Uyire..","En Swasa Kaatre","Padayappa","Kadhalar Dhinam",
+"Sangamam","Jodi","Mudhalvan","Alai Payuthey","Kandukondain Kandukondain","Rhythm",
+"Thenali","Paarthale Paravasam","Alli Arjuna","Kannathil Muthamittal","Baba",
+"Kadhal Virus","Enakku 20 Unakku 18","Kangalal Kaidhu Sei","Aaytha Ezhuthu","New",
+"Anbe Aaruyire","Sillunu Oru Kaadhal","Varalaru","Sivaji","Azhagiya Thamizh Magan",
+"Sakkarakatti","Vinnaithaandi Varuvaayaa","Raavanan","Enthiran","Kadal",
+"Kochadaiiyaan","Kaaviya Thalaivan","O Kadhal Kanmani","24",
+"Achcham Yenbadhu Madamaiyada","Kaatru Veliyidai","Cinema Veeran","Mersal",
+"Chekka Chivantha Vaanam","Sarkar","2.0","Sarvam Thaala Mayam","Bigil",
+"Iravin Nizhal","Cobra","Vendhu Thanindhathu Kaadu",
+"Ponniyin Selvan: I","Ponniyin Selvan: II","Maamannan","Ayalaan","Lal Salaam"
+];
+
+let selectedMovies = [];
+let currentIndex = 0;
+let rankings = {};
+
+function shuffle(array) {
+    return array.sort(() => 0.5 - Math.random());
+}
+
+function startGame() {
+    selectedMovies = shuffle([...allMovies]).slice(0,10);
+    currentIndex = 0;
+    rankings = {};
+    document.getElementById("playAgain").style.display = "none";
+    createRankingBoard();
+    createButtons();
+    showMovie();
+}
+
+function createRankingBoard() {
+    const board = document.getElementById("rankingBoard");
+    board.innerHTML = "";
+    for (let i=1;i<=10;i++) {
+        let div = document.createElement("div");
+        div.className = "rankBox";
+        div.id = "rank"+i;
+        div.innerHTML = "<strong>"+i+".</strong>";
+        board.appendChild(div);
+    }
+}
+
+function createButtons() {
+    const buttonsDiv = document.getElementById("buttons");
+    buttonsDiv.innerHTML = "";
+    for (let i=1;i<=10;i++) {
+        let btn = document.createElement("button");
+        btn.innerText = i;
+        btn.onclick = () => selectRank(i, btn);
+        buttonsDiv.appendChild(btn);
+    }
+}
+
+function showMovie() {
+    if (currentIndex >= selectedMovies.length) {
+        document.getElementById("movie").innerText = "Ranking Complete!";
+        document.getElementById("playAgain").style.display = "inline-block";
+        return;
+    }
+    document.getElementById("movie").innerText = selectedMovies[currentIndex];
+}
+
+function selectRank(position, button) {
+    if (rankings[position]) return;
+
+    rankings[position] = selectedMovies[currentIndex];
+    document.getElementById("rank"+position).innerHTML =
+        "<strong>"+position+".</strong> " + selectedMovies[currentIndex];
+
+    button.disabled = true;
+    currentIndex++;
+    showMovie();
+}
+
+startGame();
+
+</script>
+
+</body>
+</html>
